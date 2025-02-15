@@ -23,19 +23,24 @@ from xgboost import XGBRegressor
 #performance metric
 from sklearn.metrics import r2_score
 
+# Dataclass to store the configuration for the model trainer
 @dataclass
 class ModelTrainerConfig:
     trained_model_file_path=os.path.join('artifacts',"model.pkl")
 
+# Define a class for training models
 class ModelTrainer:
     def __init__(self):
+        # Initialize configuration using the ModelTrainerConfig dataclass
         self.model_trainer_config=ModelTrainerConfig()
 
-    
+    # Function to initiate the model training process
     def initiate_model_trainer(self,train_array,test_array):
         try:
+             # Log the start of data separation for training and testing
             logging.info("Spliting train and test input data")
 
+            # Extract features and target variable from train and test arrays
             X_train,y_train,X_test,y_test=(
                 train_array[:,:-1],
                 train_array[:,-1],
@@ -43,6 +48,7 @@ class ModelTrainer:
                 test_array[:,-1]
             )
 
+            # Dictionary to store machine learning models with their initial configuration
             models = {
                 'Random Forest':RandomForestRegressor(),
                 'Decision Tree':DecisionTreeRegressor(),
@@ -54,11 +60,16 @@ class ModelTrainer:
                 'AdaBoost Regressor':AdaBoostRegressor(),
             }
 
+            
+            # Evaluate models and store performance metrics in a dictionary
             model_report:dict=evaluate_models(X_train=X_train,
                                        y_train=y_train,
                                        X_test=X_test,
                                        y_test=y_test,
                                        models=models)
+            
+
+
             
             #to get best model score from the dict
             best_model_score=max(sorted(model_report.values()))
@@ -67,19 +78,24 @@ class ModelTrainer:
             best_model_name=list(model_report.keys())[
                 list(model_report.values()).index(best_model_score)
             ]
-
             best_model=models[best_model_name]
 
+
+
+            # Check if the best model's performance is satisfactory
             if best_model_score<0.6:
                 raise CustomException("No best model found")
             
+            # Log the identification of the best model
             logging.info(f"Best found model on both training and testing dataset")
 
+            # Save the best model to a specified path
             save_object(
                 filepath=self.model_trainer_config.trained_model_file_path,
                 obj=best_model
             )
             
+            # Predict using the best model and calculate the R-squared value
             predicted=best_model.predict(X_test)
             r2_square=r2_score(y_test,predicted)
             return r2_square
