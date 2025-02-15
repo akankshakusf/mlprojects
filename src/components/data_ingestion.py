@@ -1,12 +1,21 @@
 #import packages
 import os
 import sys
+
+# Import internal logging, error handling
 from src.exception import CustomException
 from src.logger import logging
+
+
+#data preprocessing
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from dataclasses import dataclass
+
+#object persistence from utils and datatransformer scripts
 from src.components.data_transformation import DataTransformation,DataTransformationConfig
+from src.components.model_trainer import ModelTrainerConfig,ModelTrainer
+
 
 # Define a dataclass decorator to hold the configuration for data ingestion
 @dataclass
@@ -62,7 +71,12 @@ if __name__=='__main__':
     obj=DataIngestion()
     train_data,test_data=obj.initiate_data_ingestion()
 
-    #these comes in from data transformation code script
+    #these comes in from Data transformation code script
     data_transformation=DataTransformation()
-    data_transformation.initiate_data_transformation(train_data,test_data)
+    train_arr,test_arr,_=data_transformation.initiate_data_transformation(train_data,test_data)
+
+    #these comes in from Model trainer code script
+    modeltrainer=ModelTrainer()
+    print(modeltrainer.initiate_model_trainer(train_arr,test_arr))
+
 

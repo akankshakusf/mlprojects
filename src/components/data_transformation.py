@@ -4,13 +4,19 @@ import sys
 import numpy as np
 import pandas as pd
 from dataclasses import dataclass
+
+# Import internal logging, error handling, and object persistence
+from src.exception import CustomException
+from src.logger import logging
+from src.utils import save_object
+
+#data preprocessing
 from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder,StandardScaler
-from src.exception import CustomException
-from src.logger import logging
-from src.utils import save_object
+
+
 
 # Dataclass to configure paths for data preprocessing objects
 @dataclass
