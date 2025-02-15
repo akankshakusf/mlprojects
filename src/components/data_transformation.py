@@ -19,24 +19,26 @@ class DataTransformationConfig():
 
 class DataTransformation:
     def __init__(self):
-        self.data_tranformation_config=DataTransformationConfig()
+        self.data_transformation_config=DataTransformationConfig()
 
     def get_data_transformer_obj(self):
         '''
         This function is responsible for data trasformation for varity of column data types
         '''    
         try:
-            numerical_columns=["reading_score", "writing_score"]
-            categorical_columns=["gender",
-                                  "race_ethnicity", 
-                                  "parental_level_of_education", 
-                                  "lunch", 
-                                  "test_preparation_course"]
+            numerical_columns=["writing_score", "reading_score"]
+            categorical_columns=[
+                "gender",
+                "race_ethnicity",
+                "parental_level_of_education",
+                "lunch",
+                "test_preparation_course",
+            ]
             
             numerical_pipeline = Pipeline(
                 steps=[
                     ("imputer",SimpleImputer(strategy="median")),
-                    ("standard",StandardScaler())                    
+                    ("scaler",StandardScaler())                    
                 ]
             )
 
@@ -44,11 +46,11 @@ class DataTransformation:
                 steps=[
                     ("imputer",SimpleImputer(strategy="most_frequent")),
                     ("one_hot_encoder",OneHotEncoder()),
-                    ("standard",StandardScaler(with_mean=False)) 
+                    ("scaler",StandardScaler(with_mean=False)) 
                 ]
             )
-            logging.info("Categorical columns :{categorical_columns}")
-            logging.info("Numerical columns {numerical_columns}")
+            logging.info(f"Categorical columns: {categorical_columns}")
+            logging.info(f"Numerical columns: {numerical_columns}")
 
 
             preprocessor=ColumnTransformer(
@@ -64,7 +66,7 @@ class DataTransformation:
         except Exception as e:
             raise CustomException(e, sys)
 
-    def initiate_data_tranformation(self,train_path,test_path):
+    def initiate_data_transformation(self,train_path,test_path):
         try:
             train_df=pd.read_csv(train_path)
             test_df=pd.read_csv(test_path)
@@ -99,13 +101,13 @@ class DataTransformation:
 
             #this comes from utils.py
             save_object(
-                filepath=self.data_tranformation_config.preprocessor_obj_file_path,
+                filepath=self.data_transformation_config.preprocessor_obj_file_path,
                 obj=preprocessing_obj
             ) 
 
             return(train_arr,
                    test_arr,
-                   self.data_tranformation_config.preprocessor_obj_file_path                   
+                   self.data_transformation_config.preprocessor_obj_file_path                   
                    )
 
         except Exception as e:
