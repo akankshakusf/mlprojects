@@ -1,18 +1,8 @@
-# Use an official lightweight Python image.
-FROM python:3.11-slim-buster
-
-# Set the working directory in the container.
+FROM python:3.8-slim-buster
 WORKDIR /app
-
-# Copy the current directory contents into the container at /app.
 COPY . /app
 
-# Update the package list and install awscli.
-RUN apt-get update -y && apt-get install awscli -y
+RUN apt update -y && apt install awscli -y
 
-# Install Python dependencies.
-RUN pip install -r requirements.txt
-
-# Run app.py when the container launches.
+RUN apt-get update && apt-get install ffmpeg libsm6 libxext6 unzip -y && pip install -r requirements.txt
 CMD ["python3", "app.py"]
-
