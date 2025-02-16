@@ -10,7 +10,7 @@ from src.exception import CustomException
 from src.logger import logging
 from src.utils import save_object
 
-#data preprocessing
+#data preparation
 from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
