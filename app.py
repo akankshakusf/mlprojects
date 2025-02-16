@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
 
+
 # Importing the PredictPipeline script
 from src.pipeline.predict_pipeline import CustomData, PredictPipeline
 
